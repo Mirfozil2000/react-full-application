@@ -3,9 +3,9 @@ import { logo } from "../constants";
 import { Input } from "../ui";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  registerUserFailure,
-  registerUserStart,
-  registerUserSuccess,
+  signUserFailure,
+  signUserStart,
+  signUserSuccess,
 } from "../slice/auth";
 import AuthService from "../service/auth.service";
 
@@ -17,17 +17,17 @@ const Register = () => {
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.auth);
 
-  const loginHandler = async (e) => {
+  const registerHandler = async (e) => {
     e.preventDefault();
-    dispatch(registerUserStart());
+    dispatch(signUserStart());
     const user = {username: name, email, password};
     try {
       const response = await AuthService.userRegister(user)
       console.log(response);
       console.log(user);
-      dispatch(registerUserSuccess());
+      dispatch(signUserSuccess());
     } catch (error) {
-      dispatch(registerUserFailure());
+      dispatch(signUserFailure(error.response.data.errors));
     }
   };
 
@@ -61,7 +61,7 @@ const Register = () => {
           <button
             className="w-100 btn btn-lg btn-primary mt-2"
             disabled={isLoading}
-            onClick={loginHandler}
+            onClick={registerHandler}
             type="submit"
           >
             {isLoading ? "Loading..." : "Register"}
