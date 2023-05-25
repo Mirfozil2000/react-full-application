@@ -1,0 +1,1 @@
+export const logo = 'https://ifab.se/wp-content/uploads/2019/12/Your_Logo-OUR-PRODUCTS.png'
