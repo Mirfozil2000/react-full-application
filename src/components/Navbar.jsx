@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
-  console.log(isLoggedIn);
 
   return (
     <div className="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom container pt-3">
