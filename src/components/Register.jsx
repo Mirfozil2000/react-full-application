@@ -8,6 +8,7 @@ import {
   signUserSuccess,
 } from "../slice/auth";
 import AuthService from "../service/auth.service";
+import ValidationError from "./ValidationError";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -43,7 +44,7 @@ const Register = () => {
             height="60"
           />
           <h1 className="h3 mb-3 fw-normal">Please Register</h1>
-
+          <ValidationError />
           <Input label={"Username"} state={name} setState={setName} />
           <Input
             label={"Email address"}
