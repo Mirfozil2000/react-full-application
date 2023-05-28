@@ -4,10 +4,13 @@ import {
   getArticleDetailFailure,
   getArticleDetailStart,
   getArticleDetailSuccess,
+  postArticleFailure,
+  postArticleStart,
+  postArticleSuccess,
 } from "../slice/article";
 import ArticleService from "../service/article";
-import { useParams } from "react-router-dom";
-import {ArticleForm} from './index'
+import { useNavigate, useParams } from "react-router-dom";
+import { ArticleForm } from "./index";
 
 const EditArticle = () => {
   const [title, setTitle] = useState("");
@@ -15,15 +18,16 @@ const EditArticle = () => {
   const [body, setBody] = useState("");
   const dispatch = useDispatch();
   const { slug } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getArticleDetail = async () => {
       dispatch(getArticleDetailStart());
       try {
         const response = await ArticleService.getArticleDetail(slug);
-        setTitle(response.article.title)
-        setDescription(response.article.description)
-        setBody(response.article.body)
+        setTitle(response.article.title);
+        setDescription(response.article.description);
+        setBody(response.article.body);
         dispatch(getArticleDetailSuccess(response.article));
       } catch (error) {
         dispatch(getArticleDetailFailure());
@@ -32,7 +36,19 @@ const EditArticle = () => {
     getArticleDetail();
   }, []);
 
-  const formSubmit = () => {}
+  const formSubmit = async (e) => {
+    e.preventDefault();
+    const article = { title, description, body };
+    dispatch(postArticleStart());
+    try {
+      await ArticleService.editArticle(slug, article);
+      dispatch(postArticleSuccess());
+      navigate("/");
+    } catch (error) {
+      dispatch(postArticleFailure());
+      console.log(error);
+    }
+  };
 
   const formProps = {
     title,
