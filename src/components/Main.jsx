@@ -7,22 +7,32 @@ import ArticleService from "../service/article";
 
 const Main = () => {
   const { articles, isLoading } = useSelector((state) => state.article);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const getArticles = async () => {
-    dispatch(getArticlesStart())
-    try{
+    dispatch(getArticlesStart());
+    try {
       const response = await ArticleService.getArticles();
-      dispatch(getArticleSuccess(response.articles))
-    }catch(error) {
+      dispatch(getArticleSuccess(response.articles));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteArticle = async slug => {
+    try{
+      await ArticleService.deleteArticle(slug);
+      getArticles()
+    }catch(error){
       console.log(error);
     }
   }
-  
+
   useEffect(() => {
-    getArticles()
-  }, [])
+    getArticles();
+  }, []);
 
   return (
     <>
@@ -49,35 +59,40 @@ const Main = () => {
                   <div className="card-body">
                     <p className="card-text fw-bold m-0">{item.title}</p>
                     <p className="card-text">{item.description}</p>
+                  </div>
+                  <div className="card-footer d-flex justify-content-between align-items-center">
+                    <div className="btn-group">
+                      <button
+                        onClick={() => navigate(`/article/${item.slug}`)}
+                        type="button"
+                        className="btn btn-sm btn-outline-secondary"
+                      >
+                        View
+                      </button>
+                      {isLoggedIn && user.username === item.author.username && (
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-success"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => deleteArticle(item.slug)}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
                     </div>
-                    <div className="card-footer d-flex justify-content-between align-items-center">
-                      <div className="btn-group">
-                        <button
-                          onClick={() => navigate(`/article/${item.slug}`)}
-                          type="button"
-                          className="btn btn-sm btn-outline-secondary"
-                        >
-                          View
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-success"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-danger"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                      <small className="text-body-secondary fw-bold text-capitalize">
-                        {item.author.username}
-                      </small>
-                    </div>
+                    <small className="text-body-secondary fw-bold text-capitalize">
+                      {item.author.username}
+                    </small>
                   </div>
                 </div>
+              </div>
             ))}
           </div>
         </div>
