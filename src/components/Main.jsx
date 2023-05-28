@@ -21,14 +21,14 @@ const Main = () => {
     }
   };
 
-  const deleteArticle = async slug => {
-    try{
+  const deleteArticle = async (slug) => {
+    try {
       await ArticleService.deleteArticle(slug);
-      getArticles()
-    }catch(error){
+      getArticles();
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getArticles();
@@ -72,6 +72,9 @@ const Main = () => {
                       {isLoggedIn && user.username === item.author.username && (
                         <>
                           <button
+                            onClick={() =>
+                              navigate(`/edit-article/${item.slug}`)
+                            }
                             type="button"
                             className="btn btn-sm btn-outline-success"
                           >
